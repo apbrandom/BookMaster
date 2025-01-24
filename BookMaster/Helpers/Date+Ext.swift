@@ -39,7 +39,7 @@ extension Date {
     /// Возвращает массив дней недели, включая текущую дату.
     /// - Parameter date: Дата, с которой начинается неделя (по умолчанию - сегодня).
     /// - Returns: Массив объектов `WeekDay`, представляющих дни текущей недели.
-    func feetchWeekDays(_ date: Date = Date()) -> [WeekDay] {
+    func fetchWeek(_ date: Date = Date()) -> [WeekDay] {
         let calendar = Calendar.current
         let startOfWeek = calendar.startOfDay(for: date)
         var weekDays: [WeekDay] = []
@@ -49,7 +49,7 @@ extension Date {
         
         (0..<7).forEach { index in
             if let weekDayDate = calendar.date(byAdding: .day, value: index, to: startOfweek) {
-                let weekDay = WeekDay(day: weekDayDate)
+                let weekDay = WeekDay(date: weekDayDate)
                 weekDays.append(weekDay)
             }
         }
@@ -60,7 +60,7 @@ extension Date {
         let calendar = Calendar.current
         let startOfWeek = calendar.startOfDay(for: self)
         guard let nextWeekStart = calendar.date(byAdding: .day, value: 1, to: startOfWeek) else { return [] }
-        return feetchWeekDays(nextWeekStart)
+        return fetchWeek(nextWeekStart)
         
     }
     
@@ -68,12 +68,13 @@ extension Date {
         let calendar = Calendar.current
         let startOfWeek = calendar.startOfDay(for: self)
         guard let previousWeekStart = calendar.date(byAdding: .day, value: -1, to: startOfWeek) else { return [] }
-        return feetchWeekDays(previousWeekStart)
+        return fetchWeek(previousWeekStart)
     }
     
     struct WeekDay: Identifiable {
         var id: UUID = UUID()
-        let day: Date
+        let date: Date
     }
     
 }
+

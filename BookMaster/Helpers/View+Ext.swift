@@ -9,10 +9,10 @@ import Foundation
 import SwiftUI
 
 extension View {
+    
     @ViewBuilder
     func hSpaing(_ aligment: Alignment ) -> some View {
         self.frame(maxWidth: .infinity, alignment: aligment)
-    
     }
     
     @ViewBuilder

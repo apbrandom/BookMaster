@@ -7,14 +7,7 @@
 
 import SwiftUI
 
-struct WeekView: View {
-    var body: some View {
-        HStack(spacing: 0) {
-//            ForEach(week)
-        }
-    }
-}
 
-#Preview {
-    WeekView()
-}
+//#Preview {
+//    WeekView()
+//}

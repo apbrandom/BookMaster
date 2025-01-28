@@ -70,7 +70,16 @@ extension Date {
         guard let previousWeekStart = calendar.date(byAdding: .day, value: -1, to: startOfWeek) else { return [] }
         return fetchWeek(previousWeekStart)
     }
-    
+
+        func createWeek() -> [WeekDay] {
+            let calendar = Calendar.current
+            let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: self)?.start ?? calendar.startOfDay(for: self)
+            return (0..<7).compactMap { offset in
+                guard let weekDayDate = calendar.date(byAdding: .day, value: offset, to: startOfWeek) else { return nil }
+                return WeekDay(date: weekDayDate)
+            }
+        }
+
     struct WeekDay: Identifiable {
         var id: UUID = UUID()
         let date: Date

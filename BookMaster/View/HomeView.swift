@@ -16,7 +16,7 @@ struct HomeView: View {
     @State private var isToggled: Bool = false
     @State private var weekSlider = [[Date.WeekDay]]()
     @State private var currentWeekIndex: Int = 0
-     
+    
     //MARK: Свойства View
     @Namespace private var animation
     @State private var showApprovalView: Bool = false
@@ -35,7 +35,6 @@ struct HomeView: View {
             if let lastDate = currentWeek.last?.date {
                 weekSlider.append(lastDate.createNextWeek())
             }
-            
         }
     }
     
@@ -49,7 +48,7 @@ struct HomeView: View {
                     .foregroundStyle(.gray)
             }
             .font(.title.bold())
-
+            
             Text(currentDate.formatted(date: .complete, time: .omitted))
                 .font(.callout)
                 .fontWeight(.semibold)
@@ -65,8 +64,16 @@ struct HomeView: View {
         }
         .hSpaing(.leading)
         .padding()
+        .background(.white)
+        .overlay(alignment: .topTrailing) {
+            Image(systemName: "plus")
+                .resizable()
+                .frame(width: 24, height: 24)
+                .scaledToFit()
+                .clipShape(.circle)
+                .offset(x: -19)
+        }
     }
-    
     
     @ViewBuilder
     func WeekView(_ week: [Date.WeekDay]) -> some View {
@@ -85,13 +92,13 @@ struct HomeView: View {
                         .background {
                             if isSameDate(weekDay.date, currentDate) {
                                 Circle()
-                                    .fill(.blue)
+                                    .fill(.darkBlue)
                             } else {
                                 
                             }
                             if weekDay.date.isToday {
                                 Circle()
-                                    .fill(.cyan)
+                                    .fill(.darkBlue)
                                     .frame(width: 8, height: 8)
                                     .vSpaing(.bottom)
                                     .offset(y: 12)
@@ -112,10 +119,9 @@ struct HomeView: View {
                     .clear
                     .preference(key: OffsetKey.self, value: minX)
                     .onPreferenceChange(OffsetKey.self) { value in
-//                        if value.rounded() == 15 && createWeek {
-                            paginateWeek()
-                        }
-//                    }
+//                                                if value.rounded() == 15 && createNextWeek {
+                        paginateWeek()
+                    }
             }
         }
     }
@@ -123,20 +129,29 @@ struct HomeView: View {
     func paginateWeek() {
         if weekSlider.indices.contains(currentWeekIndex) {
             if let firstDate = weekSlider[currentWeekIndex].first?.date,
-            currentWeekIndex == 0
-            {
-                weekSlider.insert(firstDate.createPreviousWeek(), at: 0)
-                weekSlider.removeLast()
+               currentWeekIndex == 0 {
+                let previousWeek = firstDate.createPreviousWeek()
+                if !previousWeek.isEmpty {
+                    weekSlider.insert(previousWeek, at: 0)
+                }
+                if weekSlider.count > 1 {
+                    weekSlider.removeLast()
+                }
                 currentWeekIndex -= 1
             }
         }
-        if let lastDate = weekSlider[currentWeekIndex].last?.date,
-            currentWeekIndex == weekSlider.count - 1 {
-            weekSlider.append(lastDate.createNextWeek())
+        
+        if weekSlider.indices.contains(currentWeekIndex),
+           let lastDate = weekSlider[currentWeekIndex].last?.date,
+           currentWeekIndex == weekSlider.count - 1 {
+            let nextWeek = lastDate.createNextWeek()
+            if !nextWeek.isEmpty {
+                weekSlider.append(nextWeek)
+            }
             currentWeekIndex = weekSlider.count - 2
         }
-        }
     }
+}
 
 
 #Preview {
